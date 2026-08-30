@@ -182,3 +182,41 @@ ungranted publication authority.
 - This record documents implementation, recovery, remote verification,
   deployment, propagation, live behavior, and cleanup as separate facts. It
   does not infer owner acceptance and made no DNS or account change.
+
+## 2026-08-30 local candidate — PerchPoints truth and presentation cleanup
+
+- Starting revision: `a01a794aec13a38c25318f665bc80d2722e3e859` on a clean
+  `main`; no inherited source changes.
+- Product truth: the PerchPoints record now states the current 429 public
+  photographs, 100 reviewed outing-level pins, and seven daylight-aware
+  Flyways. It also names the legal-limit and road-geometry speed-model work
+  across 78 audited travel days and its +0.033 percent duration-weighted
+  comparison variance. These claims derive from the current PerchPoints
+  README and `docs/SITE_HANDOFF.md`; no metric was inferred.
+- Visitor-language change: replaced process-heavy portfolio framing with
+  direct first-person or factual language while keeping existing career and
+  project claims intact. The canonical project source continues to feed both
+  visible cards and structured data.
+- Presentation change: project cards now use a simpler title, summary,
+  evidence, proof, and link hierarchy. Decorative card indexes, technology
+  chips, portrait-caption copy, the redundant credentials subheading, and the
+  contact-circle ornament were removed. Recurring public text no longer falls
+  below 12px; mobile project details are 15–16px, and the narrow inquiry form
+  is one column with 12px labels and 16px controls.
+- Candidate paths: `SITE_HANDOFF.md`, `src/app.css`,
+  `src/components/Footer.svelte`, `src/components/Main.svelte`,
+  `src/components/ProjectCard.svelte`, `src/index.test.ts`, and
+  `src/lib/projects.ts`.
+- Automated evidence: Svelte sync/check passed with 0 errors and 0 warnings;
+  Vitest passed 3 files / 10 tests; ESLint passed; targeted Prettier checks
+  passed; the production Cloudflare-adapter build passed; and
+  `git diff --check` passed.
+- Render evidence: the local root returned HTTP 200 with the new PerchPoints
+  summary, speed-model claim, proof line, and contact copy. Static responsive
+  assertions confirmed auto-height mobile cards, 15–16px mobile project text,
+  a single-column narrow form, 12px labels, 16px controls, and the retained
+  short-landscape composition rules. Browser viewport inspection was
+  unavailable, so no new screenshot, overflow measurement, or hydrated
+  viewport claim is recorded.
+- State: local candidate only. No staging, commit, push, remote contact,
+  deployment, live verification, publication, or owner acceptance occurred.

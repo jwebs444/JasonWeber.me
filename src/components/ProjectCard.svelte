@@ -6,26 +6,17 @@
 
 <article class="project-card">
 	<header class="project-card__header">
-		<p class="project-index" aria-hidden="true">{project.index}</p>
-		<div>
-			<p class="eyebrow">{project.category}</p>
-			<h4>{project.title}</h4>
-		</div>
+		<p class="eyebrow">{project.category}</p>
+		<h4>{project.title}</h4>
 	</header>
 
 	<p class="project-summary">{project.summary}</p>
 
 	<ul class="project-highlights">
 		{#each project.highlights as highlight (highlight)}
-			<li><span aria-hidden="true">↳</span>{highlight}</li>
+			<li>{highlight}</li>
 		{/each}
 	</ul>
-
-	<div class="tag-list" aria-label="Technologies used">
-		{#each project.technologies as technology (technology)}
-			<span>{technology}</span>
-		{/each}
-	</div>
 
 	<footer class="project-card__footer">
 		<p>{project.proof}</p>

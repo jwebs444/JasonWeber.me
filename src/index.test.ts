@@ -29,9 +29,15 @@ describe('featured projects', () => {
 		}
 	});
 
-	it('publishes the canonical PerchPoints destination', () => {
-		expect(featuredProjects.find(({ title }) => title === 'PerchPoints')?.href).toBe(
-			'https://perchpoints.com'
+	it('publishes the current PerchPoints facts and canonical destination', () => {
+		const perchPoints = featuredProjects.find(({ title }) => title === 'PerchPoints');
+
+		expect(perchPoints?.href).toBe('https://perchpoints.com');
+		expect(perchPoints?.summary).toContain('429 photographs at 100 reviewed PerchPoints');
+		expect(perchPoints?.summary).toContain('seven daylight-aware road trips');
+		expect(perchPoints?.highlights).toContain(
+			'Developed a legal-limit and road-geometry speed model across 78 audited travel days, reaching +0.033% duration-weighted comparison variance.'
 		);
+		expect(perchPoints?.proof).toBe('429 photographs · 100 reviewed pins · 7 Flyways');
 	});
 });

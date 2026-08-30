@@ -2,7 +2,7 @@
 	<div class="site-footer__inner">
 		<div>
 			<p class="footer-name">Jason Weber</p>
-			<p>Technology, operations, and software—with the difficult parts made clear.</p>
+			<p>Technology, operations, and software.</p>
 		</div>
 		<nav aria-label="Footer navigation">
 			<a href="#contact">Contact</a>

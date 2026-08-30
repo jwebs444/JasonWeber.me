@@ -22,13 +22,13 @@ export const projectGroups: Array<{
 		id: 'public-systems',
 		label: 'Connected public systems',
 		description:
-			'Three independent public properties shaped by the same field practice: turn direct observation into useful maps, route context, and original publishing.'
+			'Three independent public projects grown from field experience, careful research, and the practical questions that come up on the road.'
 	},
 	{
 		id: 'software-builds',
 		label: 'Focused software builds',
 		description:
-			'Two public repositories that put weather-data integration and testable game-state design in view.'
+			'A weather-comparison API and a command-line adventure, with their logic, tests, and source code open to inspect.'
 	}
 ];
 
@@ -37,35 +37,34 @@ export const featuredProjects: FeaturedProject[] = [
 		index: '01',
 		title: 'Roost Atlas',
 		group: 'public-systems',
-		category: 'Camping atlas · Public-lands data',
-		summary:
-			'A live public-lands camping map for finding free, dispersed, and developed places to roost.',
+		category: 'Camping atlas · Public-lands research',
+		summary: 'A live map for finding free, dispersed, and developed camping on public land.',
 		href: 'https://roostatlas.com',
 		linkLabel: 'Open live site',
 		technologies: ['JavaScript', 'Leaflet', 'OpenStreetMap', 'Marker clustering', 'Responsive UI'],
 		highlights: [
-			'Filters sites by cost, camping type, vehicle access, land agency, and verification.',
-			'Combines map exploration, search, clustered markers, and detailed site records.',
-			'Surfaces field-useful access and feature information without burying the map.'
+			'Searches and filters camping by cost, type, vehicle access, land agency, and verification.',
+			'Brings together map browsing, place search, clustered markers, and detailed records.',
+			'Shows access, amenities, and source information where those facts are available.'
 		],
-		proof: 'Live product · multisource verification · field-focused UX'
+		proof: 'Live map · researched public records · field-informed planning'
 	},
 	{
 		index: '02',
 		title: 'PerchPoints',
 		group: 'public-systems',
-		category: 'Photographic atlas · Route planning',
+		category: 'Photo atlas · Road-trip planning',
 		summary:
-			'A photographic atlas of reviewed places, paired with provenance-aware map locations and multi-day Flightways.',
+			'A map-led atlas of 429 photographs at 100 reviewed PerchPoints, connected through seven daylight-aware road trips.',
 		href: 'https://perchpoints.com',
 		linkLabel: 'Open live site',
 		technologies: ['SvelteKit', 'TypeScript', 'Leaflet', 'OpenStreetMap', 'Cloudflare'],
 		highlights: [
-			'Preserves exact, approximate, area-only, and withheld location tiers.',
-			'Builds Flightways around routed drives, outing estimates, and reviewed sleep leads.',
-			'Distinguishes photographed PerchPoints from honest source-only travel stops.'
+			'Keeps exact, approximate, and area-only location tiers distinct while private records stay outside the public catalog.',
+			'Developed a legal-limit and road-geometry speed model across 78 audited travel days, reaching +0.033% duration-weighted comparison variance.',
+			'Builds seven cached, road-routed Flyways from 4 to 65 days, with outing estimates and reviewed RoostAtlas sleep leads.'
 		],
-		proof: 'Live atlas · provenance-aware locations · reviewed Flightways'
+		proof: '429 photographs · 100 reviewed pins · 7 Flyways'
 	},
 	{
 		index: '03',
@@ -73,16 +72,16 @@ export const featuredProjects: FeaturedProject[] = [
 		group: 'public-systems',
 		category: 'Publishing platform · Field media',
 		summary:
-			'An original publishing platform for video, sound, field photography, writing, maps, and practical guides.',
+			'A field journal for original video, sound, photography, writing, maps, and practical guides.',
 		href: 'https://mrcrowmeister.com',
 		linkLabel: 'Open live site',
 		technologies: ['React', 'TypeScript', 'Cloudflare', 'Content pipeline', 'Responsive media'],
 		highlights: [
-			'Keeps each medium legible inside one coherent editorial and navigation system.',
-			'Uses responsive media delivery and generated indexes to keep publishing maintainable.',
-			'Moves between field evidence and original storytelling without flattening either into a feed.'
+			'Publishes video, field recordings, photography, essays, maps, and practical guides in one place.',
+			'Serves responsive media from a shared catalog, with generated indexes that keep new work organized.',
+			'Connects field notes and evidence with longer stories from the same journeys.'
 		],
-		proof: 'Live platform · original media · ongoing publishing system'
+		proof: 'Original field media · essays and guides · active publication'
 	},
 	{
 		index: '04',
@@ -96,10 +95,10 @@ export const featuredProjects: FeaturedProject[] = [
 		technologies: ['Python', 'FastAPI', 'NWS API', 'OpenWeather', 'Pytest'],
 		highlights: [
 			'Normalizes hourly and three-hour forecasts into comparable windows.',
-			'Validates location and duration inputs and handles upstream failures safely.',
+			'Returns clear validation and provider errors when upstream forecast data is unavailable.',
 			'Fetches each provider once per request and keeps credentials outside source control.'
 		],
-		proof: '7 automated tests · GitHub Actions · documented API'
+		proof: '7 automated tests · continuous integration · documented API'
 	},
 	{
 		index: '05',
@@ -116,6 +115,6 @@ export const featuredProjects: FeaturedProject[] = [
 			'Separates game state from terminal input and output for deterministic testing.',
 			'Validates player choices and closes edge cases around resting, exiting, and exploration.'
 		],
-		proof: '4 automated tests · zero runtime dependencies · CI verified'
+		proof: '4 automated tests · zero runtime dependencies · continuous integration'
 	}
 ];

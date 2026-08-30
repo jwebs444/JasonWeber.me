@@ -180,8 +180,8 @@
 			<p class="hero-kicker"><span></span> Technology · Operations · Software</p>
 			<h1 id="hero-title">Make complicated work <em>move.</em></h1>
 			<p class="hero-intro">
-				I’m Jason Weber—an operations leader and software builder who finds the real problem,
-				translates the complexity, and ships a practical way forward.
+				I’m Jason Weber—an operations leader and software builder who learns how work actually runs,
+				explains it clearly, and builds practical ways forward.
 			</p>
 			<div class="hero-actions">
 				<a class="button button-primary" href="#work"
@@ -195,7 +195,6 @@
 
 		<div class="hero-portrait">
 			<img src="/images/jason-canyon.jpg" alt="Jason Weber smiling during a canyon expedition" />
-			<p class="portrait-caption">Curious by nature.<br />Practical by training.</p>
 		</div>
 	</section>
 
@@ -230,11 +229,11 @@
 		<div class="section-heading">
 			<div>
 				<p class="eyebrow">Selected work</p>
-				<h2 id="work-title">Proof lives in the details.</h2>
+				<h2 id="work-title">Work I’ve built and put to use.</h2>
 			</div>
 			<p>
-				These projects show the same pattern I bring to operations work: understand the system,
-				design for failure, document the decisions, and leave it stronger than I found it.
+				Each project began with a real question or problem, then grew through field use, careful
+				research, and steady refinement.
 			</p>
 		</div>
 
@@ -260,7 +259,7 @@
 		<div class="section-heading section-heading--compact">
 			<div>
 				<p class="eyebrow">Experience</p>
-				<h2 id="experience-title">A career built by doing the hard thing.</h2>
+				<h2 id="experience-title">Operations, engineering, teaching, and service.</h2>
 			</div>
 		</div>
 
@@ -281,7 +280,6 @@
 	<section class="credentials section-shell" aria-labelledby="credentials-title">
 		<div class="credentials-heading">
 			<h2 id="credentials-title">Outcomes & Education</h2>
-			<p class="credentials-summary">What I’ve delivered. What I’ve learned.</p>
 		</div>
 		<div class="credentials-columns">
 			<div class="credentials-group">
@@ -337,7 +335,7 @@
 	<section class="contact" id="contact" aria-labelledby="contact-title">
 		<div class="contact__inner section-shell">
 			<p class="eyebrow">Let’s talk</p>
-			<h2 id="contact-title">Have a difficult system that needs a practical next move?</h2>
+			<h2 id="contact-title">Working through a difficult system or stalled project?</h2>
 			<div class="contact-panel">
 				<div class="contact-intro">
 					<span>Start a conversation</span>
@@ -429,13 +427,13 @@
 							</div>
 						{/if}
 						<div class="inquiry-form__footer">
-							<p>Your details are used only to respond to this inquiry.</p>
+							<p>I’ll use your details only to reply to this inquiry.</p>
 							<button
 								class="button button-light"
 								type="submit"
 								disabled={inquiryState === 'submitting' || !turnstileSiteKey}
 							>
-								{inquiryState === 'submitting' ? 'Sending…' : 'Submit inquiry'}
+								{inquiryState === 'submitting' ? 'Sending…' : 'Send inquiry'}
 								<span aria-hidden="true">→</span>
 							</button>
 						</div>
