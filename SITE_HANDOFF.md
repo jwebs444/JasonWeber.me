@@ -220,3 +220,29 @@ ungranted publication authority.
   viewport claim is recorded.
 - State: local candidate only. No staging, commit, push, remote contact,
   deployment, live verification, publication, or owner acceptance occurred.
+
+## 2026-08-30 release record — PerchPoints truth and presentation cleanup
+
+- The seven-path validated candidate was committed as
+  `78668f2674d524a4cfc3c6a794b0fcb469a2d265` on `main`.
+- Guarded host Git pushed the exact commit to `origin/main`; the wrapper and
+  a separate guarded `ls-remote` query both verified destination-SHA parity.
+- GitHub Actions `Check and Test` run `33323441811` completed successfully
+  for that SHA. The dependent `Deploy` run `33323468775` also completed
+  successfully and published the same source through the established
+  Cloudflare Pages workflow.
+- A cache-busted custom-domain request returned HTTP 200 and served the current
+  429-photograph / 100-pin / seven-Flyway PerchPoints summary, the 78-day
+  speed-model claim, the new work and contact headings, and no removed
+  `tag-list` markup or superseded work heading. The deployed stylesheet
+  `/_app/immutable/assets/0.dDbJnhHP.css` also returned HTTP 200.
+- Browser viewport inspection remained unavailable, so this record does not
+  add screenshot, overflow, or hydrated viewport claims beyond the earlier
+  accepted responsive baseline and the validated responsive source changes.
+- Untracked `.wrangler/`, `pnpm-lock.yaml`, and
+  `pnpm-workspace.yaml`, plus ignored `node_modules/` and
+  `.svelte-kit/`, remain local tooling/build residue and are excluded from
+  both release commits.
+- This documentation-only closeout follows the verified implementation
+  deployment and does not change product source. Production publication is
+  verified; owner acceptance remains a separate fact and is not inferred.
