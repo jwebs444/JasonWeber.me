@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import appTemplate from './app.html?raw';
 import pageSource from './routes/+page.svelte?raw';
 import robots from '../static/robots.txt?raw';
 import sitemap from '../static/sitemap.xml?raw';
@@ -11,6 +12,15 @@ describe('search discovery contract', () => {
 		);
 		expect(sitemap.match(/<loc>/g)).toHaveLength(1);
 		expect(sitemap).toContain('<loc>https://jasonweber.me/</loc>');
+	});
+
+	it('publishes cache-versioned JW tab and touch icons', () => {
+		expect(appTemplate).toContain('favicon-jw.svg?v=20260831');
+		expect(appTemplate).toContain('favicon-jw-32.png?v=20260831');
+		expect(appTemplate).toContain('favicon-jw-16.png?v=20260831');
+		expect(appTemplate).toContain('favicon.ico?v=20260831');
+		expect(appTemplate).toContain('apple-touch-icon.png?v=20260831');
+		expect(appTemplate).not.toContain('%sveltekit.assets%/favicon.png');
 	});
 
 	it('advertises the canonical sitemap without blocking public content', () => {
