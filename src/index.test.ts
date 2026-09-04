@@ -36,7 +36,7 @@ describe('featured projects', () => {
 		expect(perchPoints?.summary).toContain('429 photographs at 100 reviewed PerchPoints');
 		expect(perchPoints?.summary).toContain('seven daylight-aware road trips');
 		expect(perchPoints?.highlights).toContain(
-			'Developed a legal-limit and road-geometry speed model across 78 audited travel days, reaching +0.033% duration-weighted comparison variance.'
+			'Estimates road-trip driving time using speed limits and road geometry, alongside time planned for outings.'
 		);
 		expect(perchPoints?.proof).toBe('429 photographs · 100 reviewed pins · 7 Flyways');
 	});

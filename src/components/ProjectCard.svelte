@@ -17,6 +17,21 @@
 			<li>{highlight}</li>
 		{/each}
 	</ul>
+	{#if project.image}
+		<details class="project-proof">
+			<summary>See the working map</summary>
+			<figure>
+				<img
+					src={project.image.src}
+					alt={project.image.alt}
+					width="1440"
+					height="1000"
+					loading="lazy"
+				/>
+				<figcaption>{project.image.caption}</figcaption>
+			</figure>
+		</details>
+	{/if}
 
 	<footer class="project-card__footer">
 		<p>{project.proof}</p>

@@ -39,7 +39,7 @@
 				sitekey: turnstileSiteKey,
 				action: 'portfolio-inquiry',
 				theme: 'dark',
-				size: 'flexible',
+				size: 'compact',
 				appearance: 'always',
 				callback: () => {
 					turnstileState = 'ready';
@@ -194,7 +194,15 @@
 		</div>
 
 		<div class="hero-portrait">
-			<img src="/images/jason-canyon.jpg" alt="Jason Weber smiling during a canyon expedition" />
+			<img
+				src="/images/jason-canyon-800.webp"
+				srcset="/images/jason-canyon-480.webp 480w, /images/jason-canyon-800.webp 800w, /images/jason-canyon-1200.webp 1200w"
+				sizes="(max-width: 780px) calc(100vw - 32px), (min-width: 2000px) 40vw, 45vw"
+				width="2208"
+				height="2944"
+				fetchpriority="high"
+				alt="Jason Weber smiling during a canyon expedition"
+			/>
 		</div>
 	</section>
 
@@ -232,8 +240,8 @@
 				<h2 id="work-title">Work I’ve built and put to use.</h2>
 			</div>
 			<p>
-				Each project began with a real question or problem, then grew through field use, careful
-				research, and steady refinement.
+				Camping research, road-trip photography, forecast comparison, and a command-line game: five
+				projects with live sites or source code you can explore.
 			</p>
 		</div>
 
