@@ -12,6 +12,29 @@ function validForm() {
 }
 
 describe('inquiry validation', () => {
+	it('accepts either engagement path and permits omitted optional fields', () => {
+		const form = validForm();
+		form.delete('organization');
+		for (const topic of ['', 'Leadership opportunity', 'Consulting or collaboration']) {
+			form.set('topic', topic);
+			const result = parseInquiry(form);
+			expect(result.ok).toBe(true);
+			if (result.ok) {
+				expect(result.inquiry.topic).toBe(topic || 'Other');
+				expect(result.inquiry.organization).toBe('');
+			}
+		}
+		form.delete('topic');
+		expect(parseInquiry(form).ok).toBe(true);
+	});
+
+	it('rejects header injection while preserving multiline messages', () => {
+		const form = validForm();
+		form.set('message', 'Hello Jason,\nI would like to discuss a project.');
+		expect(parseInquiry(form).ok).toBe(true);
+		form.set('email', 'ada@example.com\r\nBcc: other@example.com');
+		expect(parseInquiry(form).ok).toBe(false);
+	});
 	it('accepts and normalizes a complete inquiry', () => {
 		const result = parseInquiry(validForm());
 		expect(result.ok).toBe(true);

@@ -1,467 +1,211 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-	import ProjectCard from './ProjectCard.svelte';
-	import { featuredProjects, projectGroups, type ProjectGroupId } from '$lib/projects';
-	import { inquiryTopics } from '$lib/inquiry';
-
+	import { resolve, asset } from '$app/paths';
+	import ContactForm from './ContactForm.svelte';
+	import { experience, education } from '$lib/profile';
+	import WorkHighlights from './WorkHighlights.svelte';
 	export let turnstileSiteKey = '';
-
-	const projectsForGroup = (groupId: ProjectGroupId) =>
-		featuredProjects.filter((project) => project.group === groupId);
-
-	let inquiryState: 'idle' | 'submitting' | 'success' | 'error' = 'idle';
-	let inquiryMessage = '';
-	let turnstileState: 'loading' | 'ready' | 'error' = 'loading';
-	let turnstileMessage = 'Security check is loading…';
-	let turnstileWidgetId: string | undefined;
-
-	function resetSecurityCheck() {
-		if (!turnstileWidgetId) return;
-		turnstileState = 'loading';
-		turnstileMessage = 'Preparing a new security check…';
-		window.turnstile?.reset(turnstileWidgetId);
-	}
-
-	onMount(() => {
-		if (!turnstileSiteKey) return;
-
-		let cancelled = false;
-		let retryTimer: ReturnType<typeof setTimeout> | undefined;
-
-		const renderSecurityCheck = () => {
-			if (cancelled) return;
-			if (!window.turnstile?.render) {
-				retryTimer = setTimeout(renderSecurityCheck, 100);
-				return;
-			}
-
-			turnstileWidgetId = window.turnstile.render('#inquiry-turnstile', {
-				sitekey: turnstileSiteKey,
-				action: 'portfolio-inquiry',
-				theme: 'dark',
-				size: 'compact',
-				appearance: 'always',
-				callback: () => {
-					turnstileState = 'ready';
-					turnstileMessage = 'Security check complete. You can send your inquiry.';
-				},
-				'error-callback': () => {
-					turnstileState = 'error';
-					turnstileMessage = 'The security check could not load. Refresh this page and try again.';
-				},
-				'expired-callback': () => {
-					turnstileState = 'loading';
-					turnstileMessage = 'Security check expired. Preparing a new check…';
-				},
-				'timeout-callback': () => {
-					turnstileState = 'loading';
-					turnstileMessage = 'Security check timed out. Preparing a new check…';
-				}
-			});
-		};
-
-		renderSecurityCheck();
-
-		return () => {
-			cancelled = true;
-			if (retryTimer) clearTimeout(retryTimer);
-			if (turnstileWidgetId) window.turnstile?.remove(turnstileWidgetId);
-		};
-	});
-
-	async function submitInquiry(event: SubmitEvent) {
-		event.preventDefault();
-		if (turnstileState !== 'ready') {
-			inquiryState = 'error';
-			inquiryMessage =
-				'The security check is still loading. Wait for it to complete, then submit again.';
-			return;
-		}
-
-		const form = event.currentTarget as HTMLFormElement;
-		inquiryState = 'submitting';
-		inquiryMessage = '';
-
-		try {
-			const response = await fetch('/api/inquiry', { method: 'POST', body: new FormData(form) });
-			const result = (await response.json()) as { ok: boolean; message: string };
-			inquiryMessage = result.message;
-			inquiryState = result.ok ? 'success' : 'error';
-
-			if (result.ok) {
-				form.reset();
-				if (turnstileWidgetId) window.turnstile?.remove(turnstileWidgetId);
-				turnstileWidgetId = undefined;
-			}
-		} catch {
-			inquiryState = 'error';
-			inquiryMessage = 'The message could not be sent right now. Please try again shortly.';
-		} finally {
-			if (inquiryState !== 'success') resetSecurityCheck();
-		}
-	}
-
-	const selectedImpact = [
-		{
-			title: 'Recovered critical legacy data',
-			body: 'Recovered an active data set from a failing Windows 7 system for a multi-million-dollar investment partnership.'
-		},
-		{
-			title: 'Leads technology through operations',
-			body: 'Integrates new technology and improves day-to-day systems across a working hoist and crane business.'
-		},
-		{
-			title: 'Built a business while earning two degrees',
-			body: 'Created and operated a profitable private-chef service while completing degrees in psychology and philosophy.'
-		}
-	];
-
-	const experience = [
-		{
-			period: '2024 — Present',
-			role: 'Technology & Operations Manager',
-			company: 'Kresl Power',
-			description:
-				'Direct day-to-day systems, process improvements, and technology decisions across a hoist and crane business.'
-		},
-		{
-			period: '2021 — 2024',
-			role: 'Virtualization Engineer',
-			company: 'Upstart LP',
-			description:
-				'Designed and maintained virtualization systems and advised an investment partnership on technology decisions.'
-		},
-		{
-			period: 'Aug 2020 — Jan 2022',
-			role: 'Graduate Teaching Assistant, Philosophy',
-			company: 'Northern Illinois University',
-			description:
-				'Supported undergraduate philosophy courses and translated complex arguments into clear, approachable instruction.'
-		},
-		{
-			period: '2018 — 2021',
-			role: 'Personal Chef',
-			company: 'Self-employed',
-			description:
-				'Managed the full client lifecycle for an in-home private-chef service, from planning and delivery through billing and daily operations.'
-		},
-		{
-			period: '2017 — 2018',
-			role: 'Sous Chef',
-			company: 'Livia',
-			description:
-				'Led teams of more than ten through high-volume service while maintaining coordination, quality, and calm execution.'
-		}
-	];
-
-	const capabilities = [
-		{
-			number: '01',
-			title: 'Find the real problem',
-			body: 'I trace bottlenecks and unclear ownership before deciding what to change.'
-		},
-		{
-			number: '02',
-			title: 'Make complexity usable',
-			body: 'I translate technical and analytical detail into decisions a team can act on.'
-		},
-		{
-			number: '03',
-			title: 'Build for the next person',
-			body: 'I leave behind tested tools, clear documentation, and systems people can maintain.'
-		}
-	];
+	export let initialTopic = '';
+	let selectedTopic = initialTopic;
+	$: selectedTopic = initialTopic;
 </script>
 
 <main id="top">
-	<section class="hero section-shell" aria-labelledby="hero-title">
-		<div class="hero-grid" aria-hidden="true"></div>
-		<div class="hero-copy">
-			<p class="hero-kicker"><span></span> Technology · Operations · Software</p>
-			<h1 id="hero-title">Make complicated work <em>move.</em></h1>
-			<p class="hero-intro">
-				I’m Jason Weber—an operations leader and software builder who learns how work actually runs,
-				explains it clearly, and builds practical ways forward.
-			</p>
-			<div class="hero-actions">
-				<a class="button button-primary" href="#work"
-					>Explore my work <span aria-hidden="true">↓</span></a
-				>
-				<a class="text-link" href="#contact"
-					>Start a conversation <span aria-hidden="true">↓</span></a
-				>
+	<section class="hero" aria-labelledby="hero-title">
+		<div class="hero-layout shell">
+			<div class="hero-copy">
+				<p class="eyebrow hero-eyebrow"><span class="small-rule"></span> Technology & operations</p>
+				<h1 id="hero-title">Better systems.<br />Stronger <em>operations.</em></h1>
+				<p class="hero-intro">
+					I’m Jason Weber. I help organizations improve how work gets done—with practical technology
+					decisions, clearer processes, and useful software.
+				</p>
+				<div class="actions">
+					<a class="button button-rust" href="#work"
+						>Explore my work <span aria-hidden="true">↓</span></a
+					><a class="text-link" href="#work-together"
+						>Work with me <span aria-hidden="true">↗</span></a
+					>
+				</div>
+				<p class="hero-footnote">Business experience. Technical curiosity. Hands-on ownership.</p>
 			</div>
-		</div>
-
-		<div class="hero-portrait">
-			<img
-				src="/images/jason-canyon-800.webp"
-				srcset="/images/jason-canyon-480.webp 480w, /images/jason-canyon-800.webp 800w, /images/jason-canyon-1200.webp 1200w"
-				sizes="(max-width: 780px) calc(100vw - 32px), (min-width: 2000px) 40vw, 45vw"
-				width="2208"
-				height="2944"
-				fetchpriority="high"
-				alt="Jason Weber smiling during a canyon expedition"
-			/>
+			<figure class="hero-portrait">
+				<div class="portrait-frame">
+					<img
+						src="/images/jason-canyon-800.webp"
+						srcset="/images/jason-canyon-480.webp 480w, /images/jason-canyon-800.webp 800w, /images/jason-canyon-1200.webp 1200w"
+						sizes="(max-width: 760px) calc(100vw - 48px), 40vw"
+						width="2208"
+						height="2944"
+						fetchpriority="high"
+						alt="Jason Weber smiling during a canyon expedition"
+					/><span class="portrait-corner" aria-hidden="true">JW /</span>
+				</div>
+				<figcaption>
+					<span>Curiosity carries into the field.</span><a href="#about">A little about me ↗</a>
+				</figcaption>
+			</figure>
 		</div>
 	</section>
-
-	<section class="capabilities" id="approach" aria-labelledby="approach-title">
-		<div class="section-shell">
-			<div class="section-heading section-heading--dark">
+	<section class="selected-work shell" id="work" aria-labelledby="work-title">
+		<div class="work-heading">
+			<div>
+				<p class="eyebrow">01 / Selected work</p>
+				<h2 id="work-title">A few examples.</h2>
+			</div>
+			<a class="text-link" href={resolve('/work')}
+				>View all work <span aria-hidden="true">↗</span></a
+			>
+		</div>
+		<WorkHighlights />
+	</section>
+	<section class="work-together section-pad" id="work-together" aria-labelledby="together-title">
+		<div class="shell">
+			<div class="section-heading">
 				<div>
-					<p class="eyebrow">How I work</p>
-					<h2 id="approach-title">Think deeply. Explain clearly. Build what lasts.</h2>
+					<p class="eyebrow">02 / Work with me</p>
+					<h2 id="together-title">Good work starts<br />with a conversation.</h2>
 				</div>
 				<p>
-					Psychology, philosophy, kitchens, entrepreneurship, industrial operations, and software
-					taught me to stay curious and take calm ownership when the path is unclear. Outside work,
-					I explore deserts, make photographs, write, and build field tools through
-					<a href="https://mrcrowmeister.com" target="_blank" rel="noreferrer">Mr. Crowmeister</a>.
+					A role to take ownership of, or a specific problem to work through. Here’s where my
+					experience can help.
 				</p>
 			</div>
-
-			<div class="capability-grid">
-				{#each capabilities as capability (capability.number)}
-					<article>
-						<p>{capability.number}</p>
-						<h3>{capability.title}</h3>
-						<span>{capability.body}</span>
-					</article>
-				{/each}
-			</div>
-		</div>
-	</section>
-
-	<section class="projects section-shell" id="work" aria-labelledby="work-title">
-		<div class="section-heading">
-			<div>
-				<p class="eyebrow">Selected work</p>
-				<h2 id="work-title">Work I’ve built and put to use.</h2>
-			</div>
-			<p>
-				Camping research, road-trip photography, forecast comparison, and a command-line game: five
-				projects with live sites or source code you can explore.
-			</p>
-		</div>
-
-		<div class="project-collections">
-			{#each projectGroups as group (group.id)}
-				<section class="project-collection" aria-labelledby={`project-group-${group.id}`}>
-					<header class="project-collection__heading">
-						<h3 id={`project-group-${group.id}`}>{group.label}</h3>
-						<p>{group.description}</p>
-					</header>
-
-					<div class="project-grid" class:project-grid--trio={group.id === 'public-systems'}>
-						{#each projectsForGroup(group.id) as project (project.href)}
-							<ProjectCard {project} />
-						{/each}
-					</div>
-				</section>
-			{/each}
-		</div>
-	</section>
-
-	<section class="experience section-shell" id="experience" aria-labelledby="experience-title">
-		<div class="section-heading section-heading--compact">
-			<div>
-				<p class="eyebrow">Experience</p>
-				<h2 id="experience-title">Operations, engineering, teaching, and service.</h2>
-			</div>
-		</div>
-
-		<div class="timeline">
-			{#each experience as item (item.period)}
-				<article class="timeline-item">
-					<p class="timeline-period">{item.period}</p>
-					<div class="timeline-role">
-						<h3>{item.role}</h3>
-						<p>{item.company}</p>
-					</div>
-					<p class="timeline-description">{item.description}</p>
+			<div class="engagement-grid">
+				<article>
+					<span class="engagement-number">01</span>
+					<p class="eyebrow">For organizations hiring</p>
+					<h3>Technology &<br />operations leadership.</h3>
+					<p>Connecting business needs, technical decisions, and the people doing the work.</p>
+					<ul>
+						<li>Day-to-day systems and process improvement</li>
+						<li>Technology planning and implementation</li>
+						<li>Clear communication across technical and operational teams</li>
+					</ul>
+					<a
+						class="button button-light"
+						href="#contact"
+						on:click={() => (selectedTopic = 'Leadership opportunity')}
+						>Discuss a leadership role <span aria-hidden="true">↗</span></a
+					>
+					<a class="text-link resume-link" href={asset('/Jason-Weber-Resume.pdf')} download
+						>Download my résumé <span>PDF ↓</span></a
+					>
 				</article>
-			{/each}
-		</div>
-	</section>
-
-	<section class="credentials section-shell" aria-labelledby="credentials-title">
-		<div class="credentials-heading">
-			<h2 id="credentials-title">Outcomes & Education</h2>
-		</div>
-		<div class="credentials-columns">
-			<div class="credentials-group">
-				<p class="credentials-label">Selected outcomes</p>
-				<div class="outcome-list">
-					{#each selectedImpact as item, index (item.title)}
-						<article>
-							<p>0{index + 1}</p>
-							<div>
-								<h3>{item.title}</h3>
-								<span>{item.body}</span>
-							</div>
-						</article>
-					{/each}
-				</div>
-			</div>
-			<div class="credentials-group">
-				<p class="credentials-label">Education</p>
-				<div class="education-list">
-					<article>
-						<p>2018 — 2022</p>
-						<div>
-							<h3>Bachelor’s degrees in Psychology & Philosophy</h3>
-							<span>Northern Illinois University</span>
-						</div>
-					</article>
-					<article>
-						<p>2022</p>
-						<div>
-							<h3>Wilderness First Responder</h3>
-							<span>Desert Mountain Medicine</span>
-						</div>
-					</article>
-					<article>
-						<p>2022</p>
-						<div>
-							<h3>Canyoneering Leadership & Rescue</h3>
-							<span>Uber Adventures on behalf of Association for Canyoneering Education</span>
-						</div>
-					</article>
-					<article>
-						<p>2023</p>
-						<div>
-							<h3>Python, SQL & DevOps Bootcamp</h3>
-							<span>NuCamp</span>
-						</div>
-					</article>
-				</div>
+				<article>
+					<span class="engagement-number">02</span>
+					<p class="eyebrow">For a specific challenge</p>
+					<h3>Consulting &<br />practical software.</h3>
+					<p>Bring a workflow, an aging system, or an idea that needs a useful next step.</p>
+					<ul>
+						<li>Workflow review → priorities and a practical plan</li>
+						<li>Systems assessment → options and recommendations</li>
+						<li>Focused software → a tool built around the actual work</li>
+					</ul>
+					<a
+						class="button button-light"
+						href="#contact"
+						on:click={() => (selectedTopic = 'Consulting or collaboration')}
+						>Discuss a project <span aria-hidden="true">↗</span></a
+					>
+				</article>
 			</div>
 		</div>
 	</section>
-
-	<section class="contact" id="contact" aria-labelledby="contact-title">
-		<div class="contact__inner section-shell">
-			<p class="eyebrow">Let’s talk</p>
-			<h2 id="contact-title">Working through a difficult system or stalled project?</h2>
-			<div class="contact-panel">
-				<div class="contact-intro">
-					<span>Start a conversation</span>
-					<p>
-						Tell me what you are working through, where it is stuck, and what a useful outcome looks
-						like.
-					</p>
-					<div class="contact-links" aria-label="Professional profiles">
-						<a
-							class="text-link text-link--light"
-							href="https://www.linkedin.com/in/jason-weber-data/"
-							target="_blank"
-							rel="noreferrer">LinkedIn <span aria-hidden="true">↗</span></a
-						>
-						<a
-							class="text-link text-link--light"
-							href="https://github.com/jwebs444"
-							target="_blank"
-							rel="noreferrer">GitHub <span aria-hidden="true">↗</span></a
-						>
-					</div>
-				</div>
-				{#if inquiryState === 'success'}
-					<div class="inquiry-success" role="status" aria-live="polite">
-						<p>Inquiry sent</p>
-						<h3>{inquiryMessage}</h3>
-						<span>I’ll respond as soon as I can.</span>
-					</div>
-				{:else}
-					<form class="inquiry-form" method="POST" action="/api/inquiry" on:submit={submitInquiry}>
-						<div class="form-field">
-							<label for="inquiry-name">Name</label>
-							<input id="inquiry-name" name="name" autocomplete="name" maxlength="100" required />
-						</div>
-						<div class="form-field">
-							<label for="inquiry-email">Email</label>
-							<input
-								id="inquiry-email"
-								name="email"
-								type="email"
-								autocomplete="email"
-								maxlength="254"
-								required
-							/>
-						</div>
-						<div class="form-field">
-							<label for="inquiry-organization">Organization <span>Optional</span></label>
-							<input
-								id="inquiry-organization"
-								name="organization"
-								autocomplete="organization"
-								maxlength="120"
-							/>
-						</div>
-						<div class="form-field">
-							<label for="inquiry-topic">What would you like to discuss?</label>
-							<select id="inquiry-topic" name="topic" required>
-								<option value="" disabled selected>Choose a topic</option>
-								{#each inquiryTopics as topic (topic)}
-									<option value={topic}>{topic}</option>
-								{/each}
-							</select>
-						</div>
-						<div class="form-field form-field--wide">
-							<label for="inquiry-message">Tell me about the work</label>
-							<textarea
-								id="inquiry-message"
-								name="message"
-								rows="7"
-								minlength="20"
-								maxlength="4000"
-								required></textarea>
-						</div>
-						<div class="bot-trap" aria-hidden="true">
-							<label for="inquiry-website">Website</label>
-							<input id="inquiry-website" name="website" tabindex="-1" autocomplete="off" />
-						</div>
-						{#if turnstileSiteKey}
-							<div
-								class:verification-panel--ready={turnstileState === 'ready'}
-								class:verification-panel--error={turnstileState === 'error'}
-								class="verification-panel"
-							>
-								<div class="verification-panel__heading">
-									<span>Security check</span>
-									<p role="status" aria-live="polite">{turnstileMessage}</p>
-								</div>
-								<div id="inquiry-turnstile"></div>
-							</div>
-						{/if}
-						<div class="inquiry-form__footer">
-							<p>I’ll use your details only to reply to this inquiry.</p>
-							<button
-								class="button button-light"
-								type="submit"
-								disabled={inquiryState === 'submitting' || !turnstileSiteKey}
-							>
-								{inquiryState === 'submitting' ? 'Sending…' : 'Send inquiry'}
-								<span aria-hidden="true">→</span>
-							</button>
-						</div>
-						{#if !turnstileSiteKey}
-							<p class="form-status form-status--error" role="status">
-								The inquiry form is temporarily unavailable.
-							</p>
-						{:else if inquiryMessage}
-							<p
-								class:form-status--error={inquiryState === 'error'}
-								class="form-status"
-								role="status"
-								aria-live="polite"
-							>
-								{inquiryMessage}
-							</p>
-						{/if}
-					</form>
-				{/if}
+	<section class="about section-pad shell" id="about" aria-labelledby="about-title">
+		<div class="about-layout">
+			<div>
+				<p class="eyebrow">03 / A little background</p>
+				<h2 id="about-title">An unconventional path.<br />A practical <em>perspective.</em></h2>
+				<p class="about-lead">
+					I’ve worked in kitchens, classrooms, investment technology, and industrial operations.
+					Each setting taught me something about people, systems, and taking responsibility.
+				</p>
+				<p>
+					Running a private-chef business meant owning the whole process, from the first
+					conversation to the final invoice. Teaching philosophy meant making difficult ideas
+					understandable. Today, I bring that same attention to technology and operations.
+				</p>
+				<p>
+					Outside work, I explore deserts, make photographs, write, and build tools for the field.
+					That work lives at <a
+						class="inline-link"
+						href="https://mrcrowmeister.com"
+						target="_blank"
+						rel="noreferrer">Mr. Crowmeister ↗</a
+					>.
+				</p>
 			</div>
+			<aside class="approach-note" id="approach">
+				<p class="eyebrow">How I approach the work</p>
+				<ol>
+					<li>
+						<h3>Understand what’s happening.</h3>
+						<p>Trace the bottlenecks and unclear ownership before choosing a tool.</p>
+					</li>
+					<li>
+						<h3>Make the next step clear.</h3>
+						<p>Turn technical detail into decisions a team can act on.</p>
+					</li>
+					<li>
+						<h3>Leave it in good hands.</h3>
+						<p>Build for the next person, with useful documentation and maintainable systems.</p>
+					</li>
+				</ol>
+			</aside>
+		</div>
+		<div class="experience-block" id="experience">
+			<div class="subsection-heading">
+				<h3>Experience</h3>
+				<a
+					class="text-link"
+					href="https://www.linkedin.com/in/jason-weber-data/"
+					target="_blank"
+					rel="noreferrer">Connect on LinkedIn ↗</a
+				>
+			</div>
+			{#each experience as item (item.company)}<article class="experience-row">
+					<p class="experience-date">{item.period}</p>
+					<div>
+						<h4>{item.role}</h4>
+						<p class="experience-company">{item.company}</p>
+					</div>
+					<p>{item.description}</p>
+				</article>{/each}
+		</div>
+		<details class="education">
+			<summary>Education & field training <span aria-hidden="true">+</span></summary>
+			<div class="education-grid">
+				{#each education as item (item.title)}<article>
+						<p class="eyebrow">{item.year}</p>
+						<h4>{item.title}</h4>
+						<p>{item.institution}</p>
+					</article>{/each}
+			</div>
+		</details>
+	</section>
+	<section class="contact section-pad" id="contact" aria-labelledby="contact-title">
+		<div class="contact-layout shell">
+			<div class="contact-intro">
+				<p class="eyebrow">04 / Let’s talk</p>
+				<h2 id="contact-title">Tell me what<br />you have <em>in mind.</em></h2>
+				<p>
+					A leadership opportunity, a system that needs attention, or a useful thing you’d like to
+					build.
+				</p>
+				<p>Share a little context and we can work out the next step.</p>
+				<a
+					class="text-link"
+					href="https://www.linkedin.com/in/jason-weber-data/"
+					target="_blank"
+					rel="noreferrer">Connect on LinkedIn ↗</a
+				>
+				<a class="contact-email" href="mailto:Jason@JasonWeber.me">Jason@JasonWeber.me ↗</a>
+				<p class="location-note">
+					Based in St. Charles, Illinois.<br />Open to remote work and relocation to the western
+					U.S.
+				</p>
+			</div>
+			<ContactForm siteKey={turnstileSiteKey} bind:topic={selectedTopic} />
 		</div>
 	</section>
 </main>

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Main from '../components/Main.svelte';
-	import { featuredProjects } from '$lib/projects';
+	import { workStories, selectedWork } from '$lib/stories';
 	import type { PageData } from './$types';
 
 	export let data: PageData;
@@ -21,7 +21,7 @@
 				url: 'https://jasonweber.me/',
 				name: 'Jason Weber | Technology, Operations & Software',
 				description:
-					'Jason Weber is a technology and operations leader who builds software, improves systems, and makes complex work easier to run.',
+					'Jason Weber connects business operations, technology, and useful software. Explore his work in ERP workflows, legacy data recovery, and public web applications.',
 				isPartOf: { '@id': 'https://jasonweber.me/#website' },
 				mainEntity: { '@id': 'https://jasonweber.me/#jason-weber' },
 				hasPart: { '@id': 'https://jasonweber.me/#selected-work' },
@@ -31,13 +31,13 @@
 				'@type': 'ItemList',
 				'@id': 'https://jasonweber.me/#selected-work',
 				name: 'Selected work by Jason Weber',
-				numberOfItems: featuredProjects.length,
-				itemListElement: featuredProjects.map((project, index) => ({
+				numberOfItems: selectedWork.length,
+				itemListElement: selectedWork.map((project, index) => ({
 					'@type': 'ListItem',
 					position: index + 1,
 					name: project.title,
 					description: project.summary,
-					url: project.href
+					url: `https://jasonweber.me/work/${project.slug}`
 				}))
 			},
 			{
@@ -47,6 +47,11 @@
 				url: 'https://jasonweber.me/',
 				image: 'https://jasonweber.me/images/jason-canyon.jpg',
 				jobTitle: ['Technology & Operations Manager', 'Software Builder'],
+				subjectOf: workStories.map((story) => ({
+					'@type': 'Article',
+					name: story.title,
+					url: `https://jasonweber.me/work/${story.slug}`
+				})),
 				sameAs: ['https://www.linkedin.com/in/jason-weber-data/', 'https://github.com/jwebs444']
 			}
 		]
@@ -57,13 +62,13 @@
 	<title>Jason Weber | Technology, Operations & Software</title>
 	<meta
 		name="description"
-		content="Jason Weber is a technology and operations leader who builds software, improves systems, and makes complex work easier to run."
+		content="Jason Weber connects business operations, technology, and useful software. Explore his work in ERP workflows, legacy data recovery, and public web applications."
 	/>
 	<meta name="robots" content="index, follow, max-image-preview:large" />
 	<meta property="og:title" content="Jason Weber | Technology, Operations & Software" />
 	<meta
 		property="og:description"
-		content="Make complicated work move—through clearer systems, useful software, and practical leadership."
+		content="Business systems, practical software, and operations leadership. Explore Jason Weber’s work, from protecting orders through an ERP rollout to recovering legacy data."
 	/>
 	<meta property="og:type" content="website" />
 	<meta property="og:site_name" content="Jason Weber" />
@@ -76,7 +81,7 @@
 	<meta name="twitter:title" content="Jason Weber | Technology, Operations & Software" />
 	<meta
 		name="twitter:description"
-		content="Make complicated work move—through clearer systems, useful software, and practical leadership."
+		content="Business systems, practical software, and operations leadership. Explore Jason Weber’s work, from protecting orders through an ERP rollout to recovering legacy data."
 	/>
 	<meta name="twitter:image" content="https://jasonweber.me/og.png?v=02c74beb9e6a" />
 	<link rel="canonical" href="https://jasonweber.me/" />
@@ -90,4 +95,4 @@
 	></script>
 </svelte:head>
 
-<Main turnstileSiteKey={data.turnstileSiteKey} />
+<Main turnstileSiteKey={data.turnstileSiteKey} initialTopic={data.inquiryTopic} />

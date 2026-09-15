@@ -1,0 +1,4 @@
+# Local visual testing only; this is Cloudflare's public dummy site key.
+# Copy to .dev.vars and restart the dev server.
+# The example deliberately supplies no email credentials. It cannot deliver mail.
+PUBLIC_TURNSTILE_SITE_KEY="1x00000000000000000000AA"

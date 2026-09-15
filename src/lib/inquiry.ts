@@ -1,4 +1,5 @@
 export const inquiryTopics = [
+	'Leadership opportunity',
 	'Technology & operations',
 	'Software or product work',
 	'Consulting or collaboration',
@@ -30,7 +31,7 @@ export function parseInquiry(form: FormData): InquiryResult {
 	const name = field(form, 'name');
 	const email = field(form, 'email').toLowerCase();
 	const organization = field(form, 'organization');
-	const topic = field(form, 'topic');
+	const topic = field(form, 'topic') || 'Other';
 	const message = field(form, 'message');
 
 	if (!name || name.length > 100 || unsafeHeaderPattern.test(name)) {

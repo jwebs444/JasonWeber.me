@@ -3,4 +3,8 @@
 	<url>
 		<loc>https://jasonweber.me/</loc>
 	</url>
+	<url><loc>https://jasonweber.me/work</loc></url>
+	<url><loc>https://jasonweber.me/work/technology-in-operations</loc></url>
+	<url><loc>https://jasonweber.me/work/legacy-data-recovery</loc></url>
+	<url><loc>https://jasonweber.me/work/roost-atlas</loc></url>
 </urlset>
